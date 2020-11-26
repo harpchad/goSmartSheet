@@ -1,4 +1,4 @@
-package goSmartSheet
+package gosmartsheet
 
 import (
 	"encoding/json"
@@ -21,6 +21,12 @@ type CellValue struct {
 	StringVal *string
 	IntVal    *int
 	FloatVal  *float64
+}
+
+//CellUpdate to update a cell
+type CellUpdate struct {
+	ColumnID     int64      `json:"columnId"`
+	Value        *CellValue `json:"value,omitempty"`
 }
 
 //StringDebug returns a debug string containing each of the underlying values of a Cell

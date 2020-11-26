@@ -1,4 +1,4 @@
-package goSmartSheet
+package gosmartsheet
 
 import "github.com/pkg/errors"
 

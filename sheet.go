@@ -1,4 +1,4 @@
-package goSmartSheet
+package gosmartsheet
 
 import (
 	"strconv"
@@ -112,4 +112,10 @@ type Row struct {
 	//Above will never be populated on responses, but can be used on Requests
 	Above     bool  `json:"above,omitempty"`
 	SiblingID int64 `json:"siblingId,omitempty"`
+}
+
+//RowUpdate subset for update
+type RowUpdate struct {
+	ID int64 `json:"id,omitempty"`
+	Cells []CellUpdate `json:"cells"`
 }

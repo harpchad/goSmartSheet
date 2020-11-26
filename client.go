@@ -1,4 +1,4 @@
-package goSmartSheet
+package gosmartsheet
 
 import (
 	"bytes"
@@ -104,6 +104,28 @@ func (c *Client) GetSheet(id, queryFilter string) (s *Sheet, err error) {
 		err = ErrorItemDecode(statusCode, dec)
 	}
 
+	return
+}
+
+//GetRow return a row
+func (c *Client) GetRow(sheetID, rowID string) (r *RowUpdate, err error) {
+	path := "sheets/" + sheetID + "/rows/" + rowID
+	body, statusCode, err := c.Get(path)
+	if err != nil {
+		err = errors.Wrapf(err, "Failed to sheet and row (SID: %v, RID: %v)", sheetID, rowID)
+		return
+
+	}
+	defer body.Close()
+	dec := json.NewDecoder(body)
+	if statusCode == 200 {
+		r = &RowUpdate{}
+		if err = dec.Decode(r); err != nil {
+			err = errors.Wrap(err, "Failed to decode into Row")
+		}
+	} else {
+		err = ErrorItemDecode(statusCode, dec)
+	}
 	return
 }
 
@@ -259,7 +281,7 @@ func (c *Client) AddRowsToSheet(sheetID string, rowOpt RowPostOptions, rows []Ro
 					sheetCols, err = c.GetColumns(sheetID)
 					colsPopulated = true
 					if err != nil {
-						return nil, errors.Wrapf(err, "Cannot retrieve columns: %v")
+						return nil, errors.Wrapf(err, "Cannot retrieve columns: %v", err)
 					}
 
 					//perform basic validation
@@ -311,7 +333,7 @@ func (c *Client) DeleteRowsIdsFromSheet(sheetID string, ids []string) (io.ReadCl
 //TODO: need to see sucess response as well... think it also looks like error item
 
 //UpdateRowsOnSheet will update the specified rows and data
-func (c *Client) UpdateRowsOnSheet(sheetID string, rows []Row) (io.ReadCloser, error) {
+func (c *Client) UpdateRowsOnSheet(sheetID string, rows []RowUpdate) (io.ReadCloser, error) {
 
 	// //the caller needs to pass in clean data right now
 	return c.PutObject(fmt.Sprintf("sheets/%v/rows", sheetID), rows)
@@ -364,6 +386,9 @@ func (c *Client) PutObject(path string, data interface{}) (io.ReadCloser, error)
 	if err != nil {
 		return nil, errors.Wrap(err, "Cannot encode data")
 	}
+
+	//DEBUG
+	fmt.Println(b)
 
 	resp, statusCode, err := c.Put(path, b)
 	if err != nil {
