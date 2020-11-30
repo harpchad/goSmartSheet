@@ -226,21 +226,25 @@ func (c *Client) GetJSONString(path string, prettify bool) (string, error) {
 
 	if prettify {
 		var m json.RawMessage
+		var b []byte
 
 		dec := json.NewDecoder(body)
 
-		if err := dec.Decode(&m); err != nil {
+		if err = dec.Decode(&m); err != nil {
 			return "", errors.Wrap(err, "Failed to decode")
 		}
 
-		b, err := json.MarshalIndent(&m, "", "\t")
+		b, err = json.MarshalIndent(&m, "", "\t")
 		if err != nil {
 			return "", errors.Wrap(err, "Error during indent")
 		}
 
 		s = string(b)
 	} else {
-		buf.ReadFrom(body)
+		_, err = buf.ReadFrom(body)
+		if err != nil {
+			return "", errors.Wrap(err, "Error while reading body")
+		}
 		s = buf.String()
 	}
 
@@ -254,8 +258,8 @@ func (c *Client) AddRowToSheet(sheetID string, rowOpt RowPostOptions, cellValues
 	var r Row
 
 	for i := range cellValues {
-		c := Cell{Value: &cellValues[i]}
-		r.Cells = append(r.Cells, c)
+		j := Cell{Value: &cellValues[i]}
+		r.Cells = append(r.Cells, j)
 	}
 
 	return c.AddRowsToSheet(sheetID, rowOpt, []Row{r}, NormalValidation)
@@ -316,7 +320,7 @@ func (c *Client) AddRowsToSheet(sheetID string, rowOpt RowPostOptions, rows []Ro
 
 //DeleteRowsFromSheet will delte the specified rowes from the specified sheet
 func (c *Client) DeleteRowsFromSheet(sheetID string, rows []Row) (io.ReadCloser, int, error) {
-	ids := []string{}
+	var ids []string
 	for _, r := range rows {
 		ids = append(ids, strconv.FormatInt(r.ID, 10))
 	}
@@ -386,9 +390,6 @@ func (c *Client) PutObject(path string, data interface{}) (io.ReadCloser, error)
 	if err != nil {
 		return nil, errors.Wrap(err, "Cannot encode data")
 	}
-
-	//DEBUG
-	fmt.Println(b)
 
 	resp, statusCode, err := c.Put(path, b)
 	if err != nil {
