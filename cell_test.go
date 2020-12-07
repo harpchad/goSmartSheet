@@ -175,9 +175,8 @@ func TestUnMarshalComplexJSON(t *testing.T) {
 	assert := assert.New(t)
 	var cv CellValue
 	var err error
-	var b []byte
 
-	b = []byte(`{"foo":22}`)
+	b := []byte(`{"foo":22}`)
 	if err = cv.UnmarshalJSON(b); err != nil {
 		t.Error(err)
 	} else {
@@ -191,7 +190,10 @@ func BenchmarkUnmarshallInt(b *testing.B) {
 	d := []byte(`25`)
 	// run the Fib function b.N times
 	for n := 0; n < b.N; n++ {
-		cv.UnmarshalJSON(d)
+		err := cv.UnmarshalJSON(d)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }
 
@@ -200,7 +202,10 @@ func BenchmarkUnmarshallString(b *testing.B) {
 	d := []byte(`"vtGdj"`)
 	// run the Fib function b.N times
 	for n := 0; n < b.N; n++ {
-		cv.UnmarshalJSON(d)
+		err := cv.UnmarshalJSON(d)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }
 
@@ -209,7 +214,10 @@ func BenchmarkUnmarshallStringLong(b *testing.B) {
 	d := []byte(`"vtj1413#SDG2352tw45dj"`)
 	// run the Fib function b.N times
 	for n := 0; n < b.N; n++ {
-		cv.UnmarshalJSON(d)
+		err := cv.UnmarshalJSON(d)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }
 
@@ -218,6 +226,9 @@ func BenchmarkUnmarshallFloat(b *testing.B) {
 	d := []byte(`1.25`)
 	// run the Fib function b.N times
 	for n := 0; n < b.N; n++ {
-		cv.UnmarshalJSON(d)
+		err := cv.UnmarshalJSON(d)
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }

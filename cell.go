@@ -44,7 +44,6 @@ func (c *CellValue) StringDebug() (val string) {
 
 	if c.FloatVal != nil {
 		val = val + delim + "Float Val: '" + strconv.FormatFloat(*c.FloatVal, 'f', -1, 64) + "'"
-		delim = " "
 	}
 
 	return

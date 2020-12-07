@@ -363,7 +363,7 @@ func (c *Client) PostObject(path string, data interface{}) (io.ReadCloser, error
 
 	if c.VerboseMode {
 		buf := b.(*bytes.Buffer)
-		log.Printf("Body:\n%v\n", string(buf.Bytes()))
+		log.Printf("Body:\n%v\n", buf.String())
 	}
 
 	resp, statusCode, err := c.Post(path, b)

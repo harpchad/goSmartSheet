@@ -60,9 +60,7 @@ func (s *Sheet) FindValues(vals []string) (valsNotFound []string) {
 	for _, r := range s.Rows {
 		for _, c := range r.Cells {
 			searchVal := strings.ToLower(c.DisplayValue)
-			if _, exists := m[searchVal]; exists {
-				delete(m, searchVal)
-			}
+			delete(m, searchVal)
 		}
 		if len(m) == 0 {
 			break //exit if everything was found

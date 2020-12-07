@@ -10,9 +10,10 @@ type ContainerDestination struct {
 
 //DestinationType represents the possible destination types for a ContainerDestination
 type DestinationType string
+
 //DestinationTypeHome home
 const (
 	DestinationTypeHome     DestinationType = "home"
-	DestinatonTypeWorkspace                 = "workspace"
-	DestinatonTypeFolder                    = "folder"
+	DestinatonTypeWorkspace string          = "workspace"
+	DestinatonTypeFolder    string          = "folder"
 )
