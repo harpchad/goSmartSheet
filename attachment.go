@@ -3,6 +3,7 @@ package gosmartsheet
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
+	"strconv"
 )
 
 type RowAttachments struct {
@@ -46,8 +47,8 @@ func (c *Client) GetRowAttachments(sheetID, rowID string) (r *RowAttachments, er
 	return
 }
 
-func (c *Client) GetAttachment(sheetID, attachmentID string) (r *Attachment, err error) {
-	path := "sheets/" + sheetID + "/attachments/" + attachmentID
+func (c *Client) GetAttachment(sheetID string, attachmentID int64) (r *Attachment, err error) {
+	path := "sheets/" + sheetID + "/attachments/" + strconv.FormatInt(attachmentID, 10)
 	body, statusCode, err := c.Get(path)
 	if err != nil {
 		err = errors.Wrapf(err, "Failed to sheet and row (SID: %v, RID: %v)", sheetID, attachmentID)
